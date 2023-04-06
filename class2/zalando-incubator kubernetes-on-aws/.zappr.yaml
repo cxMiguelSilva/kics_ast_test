@@ -1,0 +1,25 @@
+# for github.com
+approvals:
+  # needed to keep the compliance checks happy
+  groups:
+    zalando:
+      minimum: 2
+      from:
+        orgs:
+          - zalando
+    maintainers:
+      minimum: 2
+      from:
+        users:
+          - aermakov-zalando
+          - gargravarr
+          - hjacobs
+          - jrake-revelant
+          - linki
+          - mikkeloscar
+          - muaazsaleem
+          - szuecs
+          - aryszka
+          - jonathanbeber
+
+X-Zalando-Team: "teapot"

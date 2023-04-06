@@ -1,0 +1,39 @@
+{{ if eq .Environment "production" }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: emergency-access-service
+  namespace: kube-system
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "true" }}
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Cluster.InfrastructureAccount | getAWSAccountID }}:role/{{ .LocalID }}-emergency-access-service"
+{{ end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: emergency-access-service
+  namespace: kube-system
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceNames: ["emergency-access-service"]
+  verbs: ["get", "update", "patch"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["list", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: emergency-access-service
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: emergency-access-service
+subjects:
+- kind: ServiceAccount
+  name: emergency-access-service
+  namespace: kube-system
+{{ end }}

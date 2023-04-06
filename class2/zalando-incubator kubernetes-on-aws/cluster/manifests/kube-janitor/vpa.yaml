@@ -1,0 +1,21 @@
+{{ if ne .Environment "production" }}
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: kube-janitor
+  namespace: kube-system
+  labels:
+    application: kube-janitor
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kube-janitor
+  updatePolicy:
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies:
+    - containerName: janitor
+      maxAllowed:
+        memory: 4Gi
+{{ end }}

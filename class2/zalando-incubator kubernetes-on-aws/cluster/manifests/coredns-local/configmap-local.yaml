@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-local
+  namespace: kube-system
+  labels:
+    application: coredns
+data:
+  Corefile: |
+{{ if and (ne .ConfigItems.custom_dns_zone "") (ne .ConfigItems.custom_dns_zone_nameservers "") }}
+    {{ .ConfigItems.custom_dns_zone }}:9254 {
+        errors
+{{ if ne .ConfigItems.coredns_max_upstream_concurrency "0" }}
+        forward . {{ .ConfigItems.custom_dns_zone_nameservers }} {
+          max_concurrent {{ .ConfigItems.coredns_max_upstream_concurrency }}
+        }
+{{ else }}
+        forward . {{ .ConfigItems.custom_dns_zone_nameservers }}
+{{ end }}
+        prometheus :9153
+        ready :9155
+        cache 30
+    }
+{{ end }}
+
+{{ if eq .ConfigItems.enable_skipper_eastwest_dns "true"}}
+    ingress.cluster.local:9254 {
+{{ if eq .ConfigItems.skipper_eastwest_dns_log_enabled "true"}}
+        log
+{{ end }}
+        template IN A {
+            match "^.*[.]ingress[.]cluster[.]local"
+            answer "{{"{{"}} .Name {{"}}"}} 60 IN A 10.3.99.99"
+            fallthrough
+        }
+        template IN AAAA {
+            rcode NOERROR
+        }
+        prometheus :9153
+        ready :9155
+    }
+{{ end }}
+
+    # 10.2.0.0/16, 10.3.0.0/16 defines that this server is authority for revese
+    # lookups for these ranges.
+    cluster.local:9254 10.2.0.0/16:9254 10.3.0.0/16:9254 {
+        errors
+        kubernetes {
+            pods insecure
+        }
+        cache 30
+{{ if eq .ConfigItems.coredns_log_svc_names "true"}}
+        log svc.svc.cluster.local.
+{{ end }}
+        prometheus :9153
+        ready :9155
+    }
+
+    .:9254 {
+        errors
+        health :9154 # this is global for all servers
+        ready :9155
+        prometheus :9153
+{{ if ne .ConfigItems.coredns_max_upstream_concurrency "0" }}
+        forward . /etc/resolv.conf {
+          max_concurrent {{ .ConfigItems.coredns_max_upstream_concurrency }}
+        }
+{{ else }}
+        forward . /etc/resolv.conf
+{{ end }}
+        pprof 127.0.0.1:9156
+        cache 30
+        reload
+    }

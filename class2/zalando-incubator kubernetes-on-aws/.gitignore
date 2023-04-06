@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+*.swp
+.tox/
+*.egg*
+*.iml
+test/e2e/e2e.test
+test/e2e/e2e_modules
+test/e2e/build
+.idea

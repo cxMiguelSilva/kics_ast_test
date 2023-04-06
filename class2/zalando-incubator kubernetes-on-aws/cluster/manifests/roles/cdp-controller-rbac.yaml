@@ -1,0 +1,128 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cdp-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - namespaces
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - pods/log
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "batch"
+  resources:
+  - jobs
+  verbs:
+  - get
+  - list
+  - create
+  - delete
+- apiGroups:
+  - "apps"
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "extensions"
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+- apiGroups:
+  - "zalando.org"
+  resources:
+  - awsiamroles
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+- apiGroups:
+  - "zalando.org"
+  resources:
+  - stacksets
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+  - update
+- apiGroups:
+  - "zalando.org"
+  resources:
+  - stacks
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - "zalando.org"
+  resources:
+  - gradualdeployments
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - "zalando.org"
+  resources:
+  - gradualstacks
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+- apiGroups:
+  - "flagger.app"
+  resources:
+  - canaries
+  - metrictemplates
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cdp-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cdp-controller
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: zalando-iam:zalando:service:credprov-cdp-controller-cluster-token
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: zalando-iam:zalando:service:stups_cdp-controller

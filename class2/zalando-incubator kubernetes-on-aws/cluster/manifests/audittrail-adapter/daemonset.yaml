@@ -1,0 +1,79 @@
+{{ if ne .Cluster.ConfigItems.audittrail_url "" }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: audittrail-adapter
+  namespace: kube-system
+  labels:
+    application: audittrail-adapter
+    version: master-24
+spec:
+  selector:
+    matchLabels:
+      application: audittrail-adapter
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        application: audittrail-adapter
+        version: master-24
+    spec:
+      serviceAccountName: audittrail-adapter
+      priorityClassName: system-node-critical
+      nodeSelector:
+        node.kubernetes.io/role: master
+      tolerations:
+      - operator: Exists
+        effect: NoSchedule
+      - operator: Exists
+        effect: NoExecute
+      hostNetwork: true
+      containers:
+      - name: audittrail-adapter
+        image: pierone.stups.zalan.do/teapot/audittrail-adapter:master-25
+        env:
+          - name: AWS_REGION
+            value: {{.Cluster.Region}}
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "false" }}
+          - name: AWS_SHARED_CREDENTIALS_FILE
+            value: /meta/aws-iam/credentials.process
+{{ end }}
+        args:
+        - --cluster-id={{ .ID }}
+        - --audittrail-url={{.Cluster.ConfigItems.audittrail_url}}
+        - --s3-bucket-name=zalando-audittrail-{{accountID .InfrastructureAccount}}-{{.LocalID}}
+        - --address=:8889
+        - --metrics-address=:7980
+        volumeMounts:
+        - name: platform-iam-credentials
+          mountPath: /meta/credentials
+          readOnly: true
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "false" }}
+        - name: aws-iam-credentials
+          mountPath: /meta/aws-iam
+          readOnly: true
+{{ end }}
+        resources:
+          limits:
+            cpu: 50m
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - name: platform-iam-credentials
+        secret:
+          secretName: audittrail-adapter
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "false" }}
+      - name: aws-iam-credentials
+        secret:
+          secretName: audittrail-adapter-aws-iam-credentials
+{{ end }}
+{{ end }}

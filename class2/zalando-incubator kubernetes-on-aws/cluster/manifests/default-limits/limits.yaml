@@ -1,0 +1,15 @@
+{{ if ne .ConfigItems.teapot_admission_controller_process_resources "true" }}
+apiVersion: "v1"
+kind: "LimitRange"
+metadata:
+  name: "limits"
+  namespace: default
+spec:
+  limits:
+    - type: "Container"
+      defaultRequest:
+        cpu: "25m"
+        memory: 100Mi
+      default:
+        memory: 1Gi
+{{ end }}

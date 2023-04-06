@@ -1,0 +1,50 @@
+{{ if eq .Cluster.ConfigItems.downscaler_enabled "true" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-downscaler
+  namespace: kube-system
+  labels:
+    application: kube-downscaler
+    version: v20.4.1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: kube-downscaler
+  template:
+    metadata:
+      labels:
+        application: kube-downscaler
+        version: v20.4.1
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      serviceAccountName: kube-downscaler
+      containers:
+      - name: downscaler
+        # see https://github.com/hjacobs/kube-downscaler/releases
+        image: registry.opensource.zalan.do/teapot/kube-downscaler:20.4.1
+        args:
+          - --interval=30
+          - --exclude-namespaces=kube-system,visibility
+          # do not downscale ourselves, also keep Postgres Operator so excluded DBs can be managed
+          - --exclude-deployments=kube-downscaler,postgres-operator
+          - "--default-uptime={{ .ConfigItems.downscaler_default_uptime }}"
+          - "--default-downtime={{ .ConfigItems.downscaler_default_downtime }}"
+          - --include-resources=deployments,stacks
+          - --deployment-time-annotation=deployment-time
+        resources:
+          limits:
+            cpu: 5m
+            memory: 150Mi
+          requests:
+            cpu: 5m
+            memory: 150Mi
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+{{ end }}

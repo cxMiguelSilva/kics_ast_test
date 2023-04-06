@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: kube-system
+  labels:
+    application: external-dns
+    version: v0.7.4
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      application: external-dns
+  template:
+    metadata:
+      labels:
+        application: external-dns
+        version: v0.7.4
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "false" }}
+{{ if eq .ConfigItems.kube_aws_iam_controller_kube_system_enable "false"}}
+      annotations:
+        iam.amazonaws.com/role: "{{ .LocalID }}-app-external-dns"
+{{ end }}
+{{ end }}
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      priorityClassName: "{{ .Cluster.ConfigItems.system_priority_class }}"
+      serviceAccountName: external-dns
+      containers:
+      - name: external-dns
+        image: registry.opensource.zalan.do/teapot/external-dns:v0.7.4
+        args:
+        - --source=service
+        - --source=ingress
+        - --source=skipper-routegroup
+{{- range split .ConfigItems.external_dns_excluded_domains "," }}
+        - --exclude-domains={{ . }}
+{{- end }}
+        - --provider=aws
+        - --registry=txt
+        - --txt-owner-id={{ .Region }}:{{ .LocalID }}
+        - --txt-prefix={{ .ConfigItems.external_dns_ownership_prefix }}
+        - --aws-batch-change-size=100
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "false" }}
+{{ if eq .ConfigItems.kube_aws_iam_controller_kube_system_enable "true"}}
+        env:
+        # must be set for the AWS SDK/AWS CLI to find the credentials file.
+        - name: AWS_SHARED_CREDENTIALS_FILE # used by golang SDK
+          value: /meta/aws-iam/credentials.process
+{{ end }}
+{{ end }}
+        resources:
+          limits:
+            cpu: 50m
+            memory: 100Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 7979
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "false" }}
+{{ if eq .ConfigItems.kube_aws_iam_controller_kube_system_enable "true"}}
+        volumeMounts:
+        - name: aws-iam-credentials
+          mountPath: /meta/aws-iam
+          readOnly: true
+{{ end }}
+{{ end }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+          capabilities:
+            drop: ["ALL"]
+      securityContext:
+        fsGroup: 65534
+{{ if eq .Cluster.ConfigItems.teapot_admission_controller_service_account_iam "false" }}
+{{ if eq .ConfigItems.kube_aws_iam_controller_kube_system_enable "true"}}
+      volumes:
+      - name: aws-iam-credentials
+        secret:
+          secretName: external-dns-aws-iam-credentials
+{{ end }}
+{{ end }}
