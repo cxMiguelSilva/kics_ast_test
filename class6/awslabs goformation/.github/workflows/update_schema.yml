@@ -1,0 +1,51 @@
+name: Update Schema
+
+on:
+  # Update goformation from the CloudFormation Resource Specification daily
+  schedule:
+    - cron:  '0 0 * * *'
+  # Also allow manual execution from the GitHub Actions page
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.13
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+      
+      - name: Update Schema
+        run: |
+          echo 'GENERATE_OUTPUT<<EOF' >> $GITHUB_ENV
+          echo 'This pull request was automatically generated, and includes updates to goformation based on new or updated resources in the [AWS CloudFormation Resource Specification](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-resource-specification.html).' >> $GITHUB_ENV
+          echo '' >> $GITHUB_ENV
+          echo 'Below is the output from `go generate`:' >> $GITHUB_ENV
+          echo '' >> $GITHUB_ENV
+          echo '```' >> $GITHUB_ENV
+          go generate | tee -a $GITHUB_ENV
+          echo '```' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Run Tests
+        run: go test ./...
+
+      - name: Generate Pull Request
+        uses: peter-evans/create-pull-request@c7f493a8000b8aeb17a1332e326ba76b57cb83eb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          title: "CloudFormation Updates"
+          body: ${{ env.GENERATE_OUTPUT }}
+          commit-message: "fix(schema): CloudFormation Updates"
+          base: master
+          branch: auto-schema-update
+          delete-branch: true
+          committer: "Paul Maddox <paul.maddox@gmail.com>"
+          author: "Paul Maddox <paul.maddox@gmail.com>"
+          assignees: PaulMaddox
+ 
