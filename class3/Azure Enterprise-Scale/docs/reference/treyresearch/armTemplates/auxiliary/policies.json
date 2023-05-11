@@ -2362,7 +2362,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -2376,7 +2376,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -2397,7 +2397,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "VirtualMachines",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -2469,7 +2469,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -2483,7 +2483,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -2504,7 +2504,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "SqlServers",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -2576,7 +2576,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -2590,7 +2590,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -2611,7 +2611,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "AppServices",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -2683,7 +2683,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -2697,7 +2697,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -2718,7 +2718,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "StorageAccounts",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -2790,7 +2790,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -2804,7 +2804,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -2825,7 +2825,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "SqlServerVirtualMachines",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -2897,7 +2897,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -2911,7 +2911,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -2932,7 +2932,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "KubernetesService",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -3004,7 +3004,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -3018,7 +3018,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -3039,7 +3039,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "ContainerRegistry",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -3111,7 +3111,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -3125,7 +3125,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -3146,7 +3146,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "KeyVaults",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -3218,7 +3218,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -3232,7 +3232,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -3253,7 +3253,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "Dns",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
@@ -3325,7 +3325,7 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Security/pricings/pricingTier",
-                        "equals": "[[parameters('pricingTier')]"
+                        "equals": "standard"
                       },
                       {
                         "field": "type",
@@ -3339,7 +3339,7 @@
                       "mode": "incremental",
                       "parameters": {
                         "pricingTier": {
-                          "value": "[[parameters('pricingTier')]"
+                          "value": "standard"
                         }
                       },
                       "template": {
@@ -3360,7 +3360,7 @@
                             "apiVersion": "2018-06-01",
                             "name": "Arm",
                             "properties": {
-                              "pricingTier": "[[parameters('pricingTier')]"
+                              "pricingTier": "standard"
                             }
                           }
                         ],
