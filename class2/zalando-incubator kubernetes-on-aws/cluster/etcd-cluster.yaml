@@ -100,7 +100,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Etcd Appliance Security Group
-      SecurityGroupIngress:
+      SecurityGroupIngresses:
       - IpProtocol: tcp
         FromPort: 22
         ToPort: 22
